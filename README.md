@@ -17,20 +17,20 @@ $ npm install -g @dvn/sepet-cli
 # Usage
 Bucket name is required `-b, --bucket`.
 
-<!-- usage -->
 ```sh-session
-$ sepet COMMAND
-running command...
+// upload a single file
+$ sepet upload -b bucket-name-here ./tsconfig.json
 
-$ sepet (-v|--version|version)
-@dvn/sepet-cli/0.0.1 darwin-x64 node-v12.0.0
+// upload all files inside the current directory
+$ sepet upload -b bucket-name-here .
 
-$ sepet --help [COMMAND]
-USAGE
-  $ sepet COMMAND
-...
+// upload the directory relative to the path
+$ sepet upload -b bucket-name-here ./src/commands
+
+// upload the exact path
+$ sepet upload -b bucket-name-here /EXACT_PATH/src/commands
 ```
-<!-- usagestop -->
+
 # Commands
 <!-- commands -->
 * [`sepet help [COMMAND]`](#sepet-help-command)
