@@ -2,7 +2,7 @@ import {Command, flags} from '@oclif/command'
 import * as FormData from 'form-data'
 import * as fs from 'fs'
 import {glob} from 'glob'
-import {request} from 'https'
+import {request} from 'http'
 
 function getFiles(path: string): Promise<any> {
   return new Promise<any>((resolve, reject) => {
