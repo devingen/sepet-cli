@@ -14,50 +14,32 @@
 
 # Usage
 <!-- usage -->
-Bucket name is required `-b, --bucket`.
-
 ```sh-session
-// upload a single file
-$ sepet upload -b bucket-name-here ./tsconfig.json
-
-// upload all files inside the current directory
-$ sepet upload -b bucket-name-here .
-
-// upload the directory relative to the path
-$ sepet upload -b bucket-name-here ./src/commands
-
-// upload the exact path
-$ sepet upload -b bucket-name-here /EXACT_PATH/src/commands
+$ npm install -g sepet-cli
+$ sepet COMMAND
+running command...
+$ sepet (--version)
+sepet-cli/0.0.2 darwin-arm64 node-v16.14.0
+$ sepet --help [COMMAND]
+USAGE
+  $ sepet COMMAND
+...
 ```
 <!-- usagestop -->
 
 # Commands
 <!-- commands -->
 * [`sepet help [COMMAND]`](#sepet-help-command)
+* [`sepet plugins`](#sepet-plugins)
+* [`sepet plugins:install PLUGIN...`](#sepet-pluginsinstall-plugin)
+* [`sepet plugins:inspect PLUGIN...`](#sepet-pluginsinspect-plugin)
+* [`sepet plugins:install PLUGIN...`](#sepet-pluginsinstall-plugin-1)
+* [`sepet plugins:link PLUGIN`](#sepet-pluginslink-plugin)
+* [`sepet plugins:uninstall PLUGIN...`](#sepet-pluginsuninstall-plugin)
+* [`sepet plugins:uninstall PLUGIN...`](#sepet-pluginsuninstall-plugin-1)
+* [`sepet plugins:uninstall PLUGIN...`](#sepet-pluginsuninstall-plugin-2)
+* [`sepet plugins update`](#sepet-plugins-update)
 * [`sepet upload [PATH]`](#sepet-upload-path)
-
-## `sepet upload [PATH]`
-
-Uploads files to Sepet.
-
-```
-USAGE
-  $ sepet upload [PATH]
-
-OPTIONS
-  -b, --bucket=bucket      bucket name that is used as subdomain.
-  -e, --endpoint=endpoint  sepet API endpoint to upload the file.
-  -h, --help               show CLI help
-  -p, --port=port          sepet API port.
-  -v, --version=version    bucket version to upload to.
-
-EXAMPLES
-  $ sepet upload -b bucket-name-here .
-  $ sepet upload -b bucket-name-here ./tsconfig.json
-  $ sepet upload -b bucket-name-here ./src/commands
-```
-
-_See code: [dist/commands/upload/index.ts](https://github.com/devingen/sepet-cli/blob/v0.0.0/dist/commands/uploadZ/index.ts)_
 
 ## `sepet help [COMMAND]`
 
@@ -79,6 +61,263 @@ DESCRIPTION
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v5.1.12/src/commands/help.ts)_
 
+## `sepet plugins`
+
+List installed plugins.
+
+```
+USAGE
+  $ sepet plugins [--core]
+
+FLAGS
+  --core  Show core plugins.
+
+DESCRIPTION
+  List installed plugins.
+
+EXAMPLES
+  $ sepet plugins
+```
+
+_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v2.0.11/src/commands/plugins/index.ts)_
+
+## `sepet plugins:install PLUGIN...`
+
+Installs a plugin into the CLI.
+
+```
+USAGE
+  $ sepet plugins:install PLUGIN...
+
+ARGUMENTS
+  PLUGIN  Plugin to install.
+
+FLAGS
+  -f, --force    Run yarn install with force flag.
+  -h, --help     Show CLI help.
+  -v, --verbose
+
+DESCRIPTION
+  Installs a plugin into the CLI.
+
+  Can be installed from npm or a git url.
+
+  Installation of a user-installed plugin will override a core plugin.
+
+  e.g. If you have a core plugin that has a 'hello' command, installing a user-installed plugin with a 'hello' command
+  will override the core plugin implementation. This is useful if a user needs to update core plugin functionality in
+  the CLI without the need to patch and update the whole CLI.
+
+ALIASES
+  $ sepet plugins add
+
+EXAMPLES
+  $ sepet plugins:install myplugin 
+
+  $ sepet plugins:install https://github.com/someuser/someplugin
+
+  $ sepet plugins:install someuser/someplugin
+```
+
+## `sepet plugins:inspect PLUGIN...`
+
+Displays installation properties of a plugin.
+
+```
+USAGE
+  $ sepet plugins:inspect PLUGIN...
+
+ARGUMENTS
+  PLUGIN  [default: .] Plugin to inspect.
+
+FLAGS
+  -h, --help     Show CLI help.
+  -v, --verbose
+
+DESCRIPTION
+  Displays installation properties of a plugin.
+
+EXAMPLES
+  $ sepet plugins:inspect myplugin
+```
+
+## `sepet plugins:install PLUGIN...`
+
+Installs a plugin into the CLI.
+
+```
+USAGE
+  $ sepet plugins:install PLUGIN...
+
+ARGUMENTS
+  PLUGIN  Plugin to install.
+
+FLAGS
+  -f, --force    Run yarn install with force flag.
+  -h, --help     Show CLI help.
+  -v, --verbose
+
+DESCRIPTION
+  Installs a plugin into the CLI.
+
+  Can be installed from npm or a git url.
+
+  Installation of a user-installed plugin will override a core plugin.
+
+  e.g. If you have a core plugin that has a 'hello' command, installing a user-installed plugin with a 'hello' command
+  will override the core plugin implementation. This is useful if a user needs to update core plugin functionality in
+  the CLI without the need to patch and update the whole CLI.
+
+ALIASES
+  $ sepet plugins add
+
+EXAMPLES
+  $ sepet plugins:install myplugin 
+
+  $ sepet plugins:install https://github.com/someuser/someplugin
+
+  $ sepet plugins:install someuser/someplugin
+```
+
+## `sepet plugins:link PLUGIN`
+
+Links a plugin into the CLI for development.
+
+```
+USAGE
+  $ sepet plugins:link PLUGIN
+
+ARGUMENTS
+  PATH  [default: .] path to plugin
+
+FLAGS
+  -h, --help     Show CLI help.
+  -v, --verbose
+
+DESCRIPTION
+  Links a plugin into the CLI for development.
+
+  Installation of a linked plugin will override a user-installed or core plugin.
+
+  e.g. If you have a user-installed or core plugin that has a 'hello' command, installing a linked plugin with a 'hello'
+  command will override the user-installed or core plugin implementation. This is useful for development work.
+
+EXAMPLES
+  $ sepet plugins:link myplugin
+```
+
+## `sepet plugins:uninstall PLUGIN...`
+
+Removes a plugin from the CLI.
+
+```
+USAGE
+  $ sepet plugins:uninstall PLUGIN...
+
+ARGUMENTS
+  PLUGIN  plugin to uninstall
+
+FLAGS
+  -h, --help     Show CLI help.
+  -v, --verbose
+
+DESCRIPTION
+  Removes a plugin from the CLI.
+
+ALIASES
+  $ sepet plugins unlink
+  $ sepet plugins remove
+```
+
+## `sepet plugins:uninstall PLUGIN...`
+
+Removes a plugin from the CLI.
+
+```
+USAGE
+  $ sepet plugins:uninstall PLUGIN...
+
+ARGUMENTS
+  PLUGIN  plugin to uninstall
+
+FLAGS
+  -h, --help     Show CLI help.
+  -v, --verbose
+
+DESCRIPTION
+  Removes a plugin from the CLI.
+
+ALIASES
+  $ sepet plugins unlink
+  $ sepet plugins remove
+```
+
+## `sepet plugins:uninstall PLUGIN...`
+
+Removes a plugin from the CLI.
+
+```
+USAGE
+  $ sepet plugins:uninstall PLUGIN...
+
+ARGUMENTS
+  PLUGIN  plugin to uninstall
+
+FLAGS
+  -h, --help     Show CLI help.
+  -v, --verbose
+
+DESCRIPTION
+  Removes a plugin from the CLI.
+
+ALIASES
+  $ sepet plugins unlink
+  $ sepet plugins remove
+```
+
+## `sepet plugins update`
+
+Update installed plugins.
+
+```
+USAGE
+  $ sepet plugins update [-h] [-v]
+
+FLAGS
+  -h, --help     Show CLI help.
+  -v, --verbose
+
+DESCRIPTION
+  Update installed plugins.
+```
+
+## `sepet upload [PATH]`
+
+Uploads files to Sepet.
+
+```
+USAGE
+  $ sepet upload [PATH] [-h] [-b <value>] [-v <value>] [-e <value>] [-p <value>]
+
+FLAGS
+  -b, --bucket=<value>    bucket name that is used as subdomain.
+  -e, --endpoint=<value>  sepet API endpoint to upload the file.
+  -h, --help              Show CLI help.
+  -p, --port=<value>      sepet API port.
+  -v, --version=<value>   bucket version to upload to.
+
+DESCRIPTION
+  Uploads files to Sepet.
+
+EXAMPLES
+  $ sepet upload -b bucket-name-here .
+
+  $ sepet upload -b bucket-name-here ./tsconfig.json
+
+  $ sepet upload -b bucket-name-here ./src/commands
+```
+
+_See code: [dist/commands/upload/index.ts](https://github.com/devingen/sepet-cli/blob/v0.0.2/dist/commands/upload/index.ts)_
 <!-- commandsstop -->
 
 ## Development
