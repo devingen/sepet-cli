@@ -19,7 +19,7 @@ $ npm install -g sepet-cli
 $ sepet COMMAND
 running command...
 $ sepet (--version)
-sepet-cli/0.0.3 darwin-arm64 node-v18.2.0
+sepet-cli/0.0.4 darwin-arm64 node-v18.2.0
 $ sepet --help [COMMAND]
 USAGE
   $ sepet COMMAND
@@ -39,7 +39,6 @@ USAGE
 * [`sepet plugins:uninstall PLUGIN...`](#sepet-pluginsuninstall-plugin-1)
 * [`sepet plugins:uninstall PLUGIN...`](#sepet-pluginsuninstall-plugin-2)
 * [`sepet plugins update`](#sepet-plugins-update)
-* [`sepet upload [PATH]`](#sepet-upload-path)
 
 ## `sepet help [COMMAND]`
 
@@ -79,7 +78,7 @@ EXAMPLES
   $ sepet plugins
 ```
 
-_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v2.0.11/src/commands/plugins/index.ts)_
+_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v2.1.0/src/commands/plugins/index.ts)_
 
 ## `sepet plugins:install PLUGIN...`
 
@@ -290,34 +289,6 @@ FLAGS
 DESCRIPTION
   Update installed plugins.
 ```
-
-## `sepet upload [PATH]`
-
-Uploads files to Sepet.
-
-```
-USAGE
-  $ sepet upload [PATH] [-h] [-b <value>] [-v <value>] [-e <value>] [-p <value>]
-
-FLAGS
-  -b, --bucket=<value>    bucket name that is used as subdomain.
-  -e, --endpoint=<value>  sepet API endpoint to upload the file.
-  -h, --help              Show CLI help.
-  -p, --port=<value>      sepet API port.
-  -v, --version=<value>   bucket version to upload to.
-
-DESCRIPTION
-  Uploads files to Sepet.
-
-EXAMPLES
-  $ sepet upload -b bucket-name-here .
-
-  $ sepet upload -b bucket-name-here ./tsconfig.json
-
-  $ sepet upload -b bucket-name-here ./src/commands
-```
-
-_See code: [dist/commands/upload/index.ts](https://github.com/devingen/sepet-cli/blob/v0.0.3/dist/commands/upload/index.ts)_
 <!-- commandsstop -->
 
 ## Development
