@@ -19,7 +19,7 @@ $ npm install -g sepet-cli
 $ sepet COMMAND
 running command...
 $ sepet (--version)
-sepet-cli/0.0.2 darwin-arm64 node-v16.14.0
+sepet-cli/0.0.3 darwin-arm64 node-v18.2.0
 $ sepet --help [COMMAND]
 USAGE
   $ sepet COMMAND
@@ -317,7 +317,7 @@ EXAMPLES
   $ sepet upload -b bucket-name-here ./src/commands
 ```
 
-_See code: [dist/commands/upload/index.ts](https://github.com/devingen/sepet-cli/blob/v0.0.2/dist/commands/upload/index.ts)_
+_See code: [dist/commands/upload/index.ts](https://github.com/devingen/sepet-cli/blob/v0.0.3/dist/commands/upload/index.ts)_
 <!-- commandsstop -->
 
 ## Development
