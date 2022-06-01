@@ -1,10 +1,10 @@
-import { Command, Flags } from '@oclif/core'
+import {Command, Flags} from '@oclif/core'
 import * as FormData from 'form-data'
-import * as fs from 'fs'
-import { glob } from 'glob'
-import { request } from 'https'
+import * as fs from 'node:fs'
+import {glob} from 'glob'
+import {request} from 'node:https'
 
-export default class Upload extends Command {
+export default class Index extends Command {
   static description = 'Uploads files to Sepet.'
 
   static examples = [
@@ -14,21 +14,21 @@ export default class Upload extends Command {
   ]
 
   static flags = {
-    help: Flags.help({ char: 'h' }),
+    help: Flags.help({char: 'h'}),
     // flag with a value (-b, --bucket=VALUE)
-    bucket: Flags.string({ char: 'b', description: 'bucket name that is used as subdomain.' }),
+    bucket: Flags.string({char: 'b', description: 'bucket name that is used as subdomain.'}),
     // flag with a value (-v, --version=VALUE)
-    version: Flags.string({ char: 'v', description: 'bucket version to upload to.' }),
+    version: Flags.string({char: 'v', description: 'bucket version to upload to.'}),
     // flag with a value (-e, --endpoint=VALUE)
-    endpoint: Flags.string({ char: 'e', description: 'sepet API endpoint to upload the file.' }),
+    endpoint: Flags.string({char: 'e', description: 'sepet API endpoint to upload the file.'}),
     // flag with a value (-p, --port=VALUE)
-    port: Flags.string({ char: 'p', description: 'sepet API port.' }),
+    port: Flags.string({char: 'p', description: 'sepet API port.'}),
   }
 
-  static args = [{ name: 'path' }]
+  static args = [{name: 'path'}]
 
-  async run(): Promise<any> {
-    const { args, flags } = await this.parse(Upload)
+  public async run(): Promise<void> {
+    const {args, flags} = await this.parse(Index)
 
     if (!flags.bucket) {
       this.log('Bucket is required. -b --bucket')
@@ -58,7 +58,7 @@ export default class Upload extends Command {
     if (path.indexOf('.') === 0) {
       // user passed a relative path like '.' './src' './src/commands'
       // build the complete path by adding the current path as prefix
-      path = `${process.cwd()}${path.substring(1)}`
+      path = `${process.cwd()}${path.slice(1)}`
     }
 
     const isDirectory = fs.lstatSync(path).isDirectory()
@@ -75,12 +75,12 @@ export default class Upload extends Command {
 
       const files = await getFiles(path)
 
-      for (let i = 0; i < files.length; i++) {
-        const filePath = files[i]
+      for (const filePath of files) {
         if (!fs.statSync(filePath).isFile()) {
           continue
         }
-        const clearFileName = filePath.substring(pathNamePrefixLength)
+
+        const clearFileName = filePath.slice(Math.max(0, pathNamePrefixLength))
         this.log(clearFileName)
 
         // eslint-disable-next-line no-await-in-loop
@@ -90,7 +90,7 @@ export default class Upload extends Command {
       }
     } else {
       // upload single file
-      const clearFileName = path.substring(path.lastIndexOf('/') + 1)
+      const clearFileName = path.slice(Math.max(0, path.lastIndexOf('/') + 1))
       this.log(clearFileName)
 
       await uploadFile(endpoint, port, flags.bucket, version, clearFileName, path).catch(error => {
@@ -107,6 +107,7 @@ function getFiles(path: string): Promise<any> {
         reject(err)
         return
       }
+
       resolve(files)
     })
   })
@@ -144,6 +145,7 @@ const uploadFile = (host: string, port: string, bucket: string, version: string,
         } else {
           reject(body.error || body)
         }
+
         resolve(body)
       })
     },
@@ -154,3 +156,4 @@ const uploadFile = (host: string, port: string, bucket: string, version: string,
 
   // req.end()
 })
+
