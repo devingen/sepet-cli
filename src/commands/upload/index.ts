@@ -2,7 +2,8 @@ import {Command, Flags} from '@oclif/core'
 import * as FormData from 'form-data'
 import * as fs from 'node:fs'
 import {glob} from 'glob'
-import {request} from 'node:https'
+import {request as httpRequest} from 'node:http'
+import {request as httpsRequest} from 'node:https'
 
 export default class Index extends Command {
   static description = 'Uploads files to Sepet.'
@@ -23,6 +24,12 @@ export default class Index extends Command {
     endpoint: Flags.string({char: 'e', description: 'sepet API endpoint to upload the file.'}),
     // flag with a value (-p, --port=VALUE)
     port: Flags.string({char: 'p', description: 'sepet API port.'}),
+    // flag with a value (-H, --headers=VALUE)
+    headers: Flags.string({
+      char: 'H',
+      description: 'headers to sent to sepet API. Key value pairs must be separated by = and joined by ;',
+      multiple: true,
+    }),
   }
 
   static args = [{name: 'path'}]
@@ -45,15 +52,17 @@ export default class Index extends Command {
     const port = flags.port || '443'
 
     if (flags.port) {
-      this.log(`Uploading to ${endpoint}:${port}`)
+      this.log(`API: ${endpoint}:${port}`)
     } else {
-      this.log(`Uploading to ${endpoint}`)
+      this.log(`API: ${endpoint}`)
     }
 
-    const version = flags.version || 'default'
-    if (flags.version) {
+    const version = flags.version || ''
+    if (version) {
       this.log(`Uploading to version ${version}`)
     }
+
+    const headers = flags.headers || []
 
     if (path.indexOf('.') === 0) {
       // user passed a relative path like '.' './src' './src/commands'
@@ -84,8 +93,8 @@ export default class Index extends Command {
         this.log(clearFileName)
 
         // eslint-disable-next-line no-await-in-loop
-        await uploadFile(endpoint, port, flags.bucket, version, clearFileName, filePath).catch(error => {
-          this.error(`Uploading file failed: ${error}`)
+        await uploadFile(endpoint, port, headers, flags.bucket, version, clearFileName, filePath).catch(error => {
+          this.log(`Uploading file failed: ${error}`)
         })
       }
     } else {
@@ -93,8 +102,8 @@ export default class Index extends Command {
       const clearFileName = path.slice(Math.max(0, path.lastIndexOf('/') + 1))
       this.log(clearFileName)
 
-      await uploadFile(endpoint, port, flags.bucket, version, clearFileName, path).catch(error => {
-        this.error(`Uploading file failed: ${error}`)
+      await uploadFile(endpoint, port, headers, flags.bucket, version, clearFileName, path).catch(error => {
+        this.log(`Uploading file failed: ${error}`)
       })
     }
   }
@@ -113,20 +122,30 @@ function getFiles(path: string): Promise<any> {
   })
 }
 
-const uploadFile = (host: string, port: string, bucket: string, version: string, fileName: string, filePath: string): Promise<any> => new Promise<any>((resolve, reject) => {
+const uploadFile = (host: string, port: string, headers: string[], bucket: string, version: string, fileName: string, filePath: string): Promise<any> => new Promise<any>((resolve, reject) => {
   const form = new FormData()
   form.append(fileName, fs.createReadStream(filePath) as any)
 
+  const requestHeaders = {
+    ...form.getHeaders(),
+  }
+  if (version) {
+    requestHeaders['bucket-version'] = version
+  }
+  headers.forEach(couple => {
+    // split only until the first occurrence of '='
+    const parts = couple.split(/=(.*)/s)
+    requestHeaders[parts[0]] = parts[1]
+  })
+
+  const request = port === '443' ? httpsRequest : httpRequest
   const req = request(
     {
       host: host,
       port: port,
       path: `/${bucket}`,
       method: 'POST',
-      headers: {
-        ...form.getHeaders(),
-        'Bucket-Version': version,
-      },
+      headers: requestHeaders,
     },
     response => {
       let data = ''
