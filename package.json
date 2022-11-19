@@ -1,6 +1,6 @@
 {
   "name": "sepet-cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Sepet CLI",
   "author": "Emir Luleci @eluleci",
   "bin": {
