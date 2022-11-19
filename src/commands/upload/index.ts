@@ -4,6 +4,7 @@ import * as fs from 'node:fs'
 import {glob} from 'glob'
 import {request as httpRequest} from 'node:http'
 import {request as httpsRequest} from 'node:https'
+import {PromisePool} from '@supercharge/promise-pool'
 
 export default class Index extends Command {
   static description = 'Uploads files to Sepet.'
@@ -41,6 +42,7 @@ export default class Index extends Command {
       this.log('Bucket is required. -b --bucket')
       return
     }
+    const bucket = flags.bucket
 
     let path = args.path
     if (!path || path === '') {
@@ -82,21 +84,20 @@ export default class Index extends Command {
         pathNamePrefixLength += 1
       }
 
-      const files = await getFiles(path)
+      const files: string[] = await getFiles(path)
+      const filteredFiles = files.filter(filePath => fs.statSync(filePath).isFile())
 
-      for (const filePath of files) {
-        if (!fs.statSync(filePath).isFile()) {
-          continue
-        }
+      await PromisePool
+        .withConcurrency(20)
+        .for(filteredFiles)
+        .process(async (filePath, index, pool) => {
+          const clearFileName = filePath.slice(Math.max(0, pathNamePrefixLength))
+          this.log(clearFileName)
 
-        const clearFileName = filePath.slice(Math.max(0, pathNamePrefixLength))
-        this.log(clearFileName)
-
-        // eslint-disable-next-line no-await-in-loop
-        await uploadFile(endpoint, port, headers, flags.bucket, version, clearFileName, filePath).catch(error => {
-          this.log(`Uploading file failed: ${error}`)
+          return uploadFile(endpoint, port, headers, bucket, version, clearFileName, filePath).catch(error => {
+            this.log(`Uploading file failed: ${error}`)
+          })
         })
-      }
     } else {
       // upload single file
       const clearFileName = path.slice(Math.max(0, path.lastIndexOf('/') + 1))
