@@ -1,7 +1,4 @@
 import {Command, Flags} from '@oclif/core'
-import * as FormData from 'form-data'
-import * as fs from 'node:fs'
-import {glob} from 'glob'
 import {request as httpRequest} from 'node:http'
 import {request as httpsRequest} from 'node:https'
 
@@ -55,7 +52,7 @@ export default class Index extends Command {
     }
 
     await updateBucket(endpoint, port, headers, flags.id, version).catch(error => {
-      this.log(`Updating bucket failed: ${error}`)
+      this.log(`Updating bucket failed`, error)
     }).then(() => {
       this.log(`Version is updated to ${version}`)
     })
